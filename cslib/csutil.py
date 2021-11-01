@@ -257,51 +257,22 @@ def find_source_file_path(args):
 
 
 def is_interest_call(call_command):
-    import backup.static
-    import libcsbuild
     """ A predicate to decide the entry is a compiler call or not. """
-
     basename = os.path.basename(call_command).lower()
-    if cslib.is_windows():
-        basename, _ = os.path.splitext(basename)
     patterns = [
         re.compile(r'^g(cc|\+\+)(-\d+(\.\d+){0,2})?'),
         re.compile(r'^([^-]*-)*g(cc|\+\+)(-\d+(\.\d+){0,2})?'),
-        re.compile(r'^([^-]*-)*q(cc|\+\+)(-\d+(\.\d+){0,2})?'),
         re.compile(r'^([^-]*-)*clang(\+\+)?(-\d+(\.\d+){0,2})?'),
         re.compile(r'^llvm-g(cc|\+\+)'),
         re.compile(r'^([^-]*-)*ar$'),
-        re.compile(r'^cl\.exe'),
-        re.compile(r'^link\.exe'),
-        re.compile(r'^xc8\.exe'),
-        re.compile(r'^cpp\.exe'),
-        re.compile(r'^cpstm8\.exe'),
-        re.compile(r'^castm8\.exe'),
-        re.compile(r'^clnk\.exe'),
-        re.compile(r'^dcc\.exe'),
-        re.compile(r'^ctoa\.exe'),
-        re.compile(r'^etoa\.exe'),
-        re.compile(r'^dld\.exe')
     ]
 
     results = any((pattern.match(basename) for pattern in patterns))
 
-    if not results:
-        # LDH, 컴파일러 파일에서 tool_name 가져오기
-        # 위 정규표현식은 그대로 두고 compiler_list.json에 존재하는 실행파일 정보 가져오는 방식으로 수행
-        basename, ext = os.path.splitext(os.path.basename(call_command))
-        basename = basename.lower()
-        tool_list = backup.static.get_tool_list()
-        if basename in tool_list:
-            return True
-        else:
-            libcsbuild.write_csbuild_log('basename: ' + str(basename))
-            libcsbuild.write_csbuild_log('tool_list: ' + str(tool_list))
-
-    libcsbuild.write_csbuild_log('is_interest_call() / process: ' + basename + ' / return: ' + str(results))
-    return results
-
-    # return any((pattern.match(basename) for pattern in patterns))
+    if results:
+        return True
+    else:
+        return False
 
 
 def is_source_or_header_file(file_path, system_include_path_list=None):

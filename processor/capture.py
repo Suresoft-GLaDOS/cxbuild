@@ -15,14 +15,10 @@ def display_first_usage():
     print()
 
 
-def capture_processing():
-    parser = argparse.ArgumentParser(add_help=False, usage="csbuild capture [-e|--edg] [-v|--valid] [BUILD_COMMAND]")
+def capture_common():
+    parser = argparse.ArgumentParser(add_help=False, usage="csbuild capture [BUILD_COMMAND]")
     try:
-        parser.add_argument("-h", "--help", action='help', help="Show the command of csbuild capture mode")
-        parser.add_argument('command', metavar='BUILD_COMMAND', type=str, nargs='*', help="Command to build source or script")
-        args = parser.parse_args(sys.argv[2:])
-
-        libcsbuild.set_command(args.command)
+        libcsbuild.set_command(sys.argv[2:])
 
     except Exception as e:
         if str(e) != '':
@@ -30,10 +26,19 @@ def capture_processing():
         parser.print_help()
         return False
 
+    libcsbuild.set_working_dir(os.path.join(os.path.abspath(os.curdir), '.xdb'))
     os.environ['STATICFILE_WORKDIR'] = libcsbuild.get_working_dir()
 
     # LDH, 워킹 디렉토리 없으면 생성
     if not os.path.exists(libcsbuild.get_working_dir()):
         os.makedirs(libcsbuild.get_working_dir())
 
+
+def capture_processing():
+    capture_common()
     return codescroll.build_normal.run()
+
+
+def capture_post_only_processing():
+    capture_common()
+    return codescroll.build_normal.run_post()

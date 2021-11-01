@@ -20,6 +20,7 @@ def initialize():
 
 options = {
     'capture': {"function": processor.capture_processing, 'group': 'legacy', 'help': 'Performs user commands to capture compilation information and only save it local storage area'},
+    'captured': {"function": processor.capture_post_only_processing, 'group': 'legacy', 'help': 'DO NOT performs user commands, but process post process phase'},
 }
 
 prints = ['legacy']

@@ -5,6 +5,7 @@ import subprocess
 
 import codescroll.strace
 import codescroll.wtrace
+import codescroll
 import cslib
 import json
 from codescroll.runner import *
@@ -83,14 +84,22 @@ class LinuxStracePreprocess(Runner):
     def start(self, _, previous_result=None):
         libcsbuild.step_message("Analyzing build Activities")
         full_cstrace_log_file_path = os.path.join(libcsbuild.get_working_dir(), "full_cstrace.log")
+        filtered_log_file_path = os.path.join(libcsbuild.get_working_dir(), "filtered_cstrace.log")
         cstrace_json_path = os.path.join(libcsbuild.get_working_dir(), "xtrace_tree.json")
 
-        if os.path.exists(full_cstrace_log_file_path):
+        if os.path.exists(filtered_log_file_path):
+            cstrace_log_path = filtered_log_file_path
+        # create new one
+        elif os.path.exists(full_cstrace_log_file_path):
             cstrace_log_path = codescroll.strace.filter_cstrace_log()
+        else:
+            raise Exception("Can't not find full cstrace result")
+
+        if os.path.exists(cstrace_log_path):
             codescroll.strace.create_cstrace_json(cstrace_json_path, cstrace_log_path)
             return True, cstrace_json_path
         else:
-            raise Exception("Can't not find cstrace result" )
+            raise Exception("Can't not find cstrace result")
 
 
 class WindowsTraceProcessor(Runner):
@@ -117,6 +126,21 @@ def run():
 
     builder = LinuxBuild() #if not cslib.is_windows() else WindowsBuild()
     tracer = LinuxStracePreprocess() #if not cslib.is_windows() else WindowsTraceProcessor()
-
-    builder.next(tracer)
+    project = codescroll.ProjectInformationBuilder()
+    clang = codescroll.ClangCompilationDatabaseExport()
+    builder.next(tracer).next(project).next(clang)
     return builder.run(None)
+
+
+def run_post():
+    # make directory, and made side-effects here
+    working_directory = os.path.abspath(libcsbuild.get_working_dir())
+    if not os.access(working_directory, os.W_OK | os.R_OK):
+        libcsbuild.error_message("%s directory is not right permission to do your request" % working_directory)
+        return False, None
+
+    tracer = LinuxStracePreprocess() #if not cslib.is_windows() else WindowsTraceProcessor()
+    project = codescroll.ProjectInformationBuilder()
+    clang = codescroll.ClangCompilationDatabaseExport()
+    tracer.next(project).next(clang)
+    return tracer.run(None)

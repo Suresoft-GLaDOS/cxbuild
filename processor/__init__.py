@@ -1,1 +1,1 @@
-from .capture import capture_processing
+from .capture import *
