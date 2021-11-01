@@ -33,7 +33,7 @@ jobs:
       with: 
         spec: build.spec
 
-    - run: cp ${{github.workspace}}/dist/cxbuild ${{github.workspace}}/bin/cxbuild
+    - run: cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
     
     - name: packaging
       uses: actions/upload-artifact@v2
