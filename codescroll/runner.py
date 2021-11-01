@@ -26,7 +26,6 @@ class Runner(metaclass=RunnerMeta):
         succeed, value = self.start(object, previous_result)
         if succeed is True:
             if self.next_runner is not None:
-                # STCS-50 항상 빌드를 시작했던 위치로 돌아가야 함
                 os.chdir(libcsbuild.csbuild_build_root())
                 return self.next_runner.run(object, value)
         return succeed, value

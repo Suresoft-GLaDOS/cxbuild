@@ -25,3 +25,7 @@ def set_command(command):
 
 def get_command():
     return _COMMAND
+
+
+def get_new_file_path(filename):
+    return os.path.join(get_working_dir(), filename)

@@ -11,8 +11,9 @@ import json
 from codescroll.runner import *
 
 
+
 # Commercial only
-class WindowsBuild(Runner):
+class _WindowsBuild(Runner):
     def start(self, _, previous_result=None):
         libcsbuild.step_message("Build")
 
@@ -33,7 +34,7 @@ class WindowsBuild(Runner):
         return is_succeed, previous_result
 
 
-class LinuxBuild(Runner):
+class _LinuxBuild(Runner):
 
     with_open_template = 'cstrace -s 65535 -e trace=open,openat,execve -v -y -f -o "$(working_dir)/full_cstrace.log" -- $(args_string)'
     without_open_template = 'cstrace -s 65535 -e trace=execve -v -y -f -o "$(working_dir)/full_cstrace.log" -- $(args_string)'
@@ -55,9 +56,7 @@ class LinuxBuild(Runner):
             command = ' '.join(['"' + cmd + '"' if ' ' in cmd else cmd for cmd in command])
             cstrace_command = cstrace_command.replace('$(working_dir)', libcsbuild.get_working_dir())
             cstrace_command = cstrace_command.replace('$(args_string)', command)
-            print(command)
 
-            print(cstrace_command)
             return_value = subprocess.call(cstrace_command, shell=True)
 
             return return_value
@@ -65,7 +64,7 @@ class LinuxBuild(Runner):
         libcsbuild.step_message("Build")
         clean_working_dir()
 
-        # STCS-50 pyinstaller 가 LD_LIBRARY_PATH 를 선점하여 사용해서 원래 빌드 의미가 달라지는 문제
+        # pyinstaller use LD_LIBRARY_PATH
         library_path = ''
         if not cslib.is_windows():
             if 'LD_LIBRARY_PATH' in os.environ:
@@ -77,10 +76,11 @@ class LinuxBuild(Runner):
         if not cslib.is_windows():
             os.environ['LD_LIBRARY_PATH'] = library_path
 
+        libcsbuild.step_message("Build Captured")
         return okay, previous_result
 
 
-class LinuxStracePreprocess(Runner):
+class _LinuxStracePreprocess(Runner):
     def start(self, _, previous_result=None):
         libcsbuild.step_message("Analyzing build Activities")
         full_cstrace_log_file_path = os.path.join(libcsbuild.get_working_dir(), "full_cstrace.log")
@@ -97,12 +97,19 @@ class LinuxStracePreprocess(Runner):
 
         if os.path.exists(cstrace_log_path):
             codescroll.strace.create_cstrace_json(cstrace_json_path, cstrace_log_path)
+
+            libcsbuild.step_message("Build trace preprocessed")
+
+            # remove fulltrace
+            if os.path.exists(full_cstrace_log_file_path):
+                os.remove(full_cstrace_log_file_path)
             return True, cstrace_json_path
         else:
             raise Exception("Can't not find cstrace result")
 
 
-class WindowsTraceProcessor(Runner):
+class _WindowsTraceProcessor(Runner):
+    """Not yet implemented """
     def start(self, _, previous_result=None):
         libcsbuild.step_message("Analyzing build Activities")
 
@@ -113,34 +120,3 @@ class WindowsTraceProcessor(Runner):
             json.dump(jsons, fulltrace, indent=2, ensure_ascii=False)
 
         return True, fulltrace_filepath
-
-
-# ----------------------------------- Runner Configurations
-def run():
-    # make directory, and made side-effects here
-    working_directory = os.path.abspath(libcsbuild.get_working_dir())
-    cslib.make_dir(working_directory)
-    if not os.access(working_directory, os.W_OK | os.R_OK):
-        libcsbuild.error_message("%s directory is not right permission to do your request" % working_directory)
-        return False, None
-
-    builder = LinuxBuild() #if not cslib.is_windows() else WindowsBuild()
-    tracer = LinuxStracePreprocess() #if not cslib.is_windows() else WindowsTraceProcessor()
-    project = codescroll.ProjectInformationBuilder()
-    clang = codescroll.ClangCompilationDatabaseExport()
-    builder.next(tracer).next(project).next(clang)
-    return builder.run(None)
-
-
-def run_post():
-    # make directory, and made side-effects here
-    working_directory = os.path.abspath(libcsbuild.get_working_dir())
-    if not os.access(working_directory, os.W_OK | os.R_OK):
-        libcsbuild.error_message("%s directory is not right permission to do your request" % working_directory)
-        return False, None
-
-    tracer = LinuxStracePreprocess() #if not cslib.is_windows() else WindowsTraceProcessor()
-    project = codescroll.ProjectInformationBuilder()
-    clang = codescroll.ClangCompilationDatabaseExport()
-    tracer.next(project).next(clang)
-    return tracer.run(None)

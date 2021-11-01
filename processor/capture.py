@@ -7,8 +7,6 @@ import argparse
 
 import libcsbuild
 import codescroll
-import codescroll.strace
-import codescroll.build_normal
 
 
 def display_first_usage():
@@ -36,9 +34,8 @@ def capture_common():
 
 def capture_processing():
     capture_common()
-    return codescroll.build_normal.run()
+    return codescroll.run()
 
 
 def capture_post_only_processing():
-    capture_common()
-    return codescroll.build_normal.run_post()
+    return codescroll.run_post()

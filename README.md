@@ -56,7 +56,7 @@ If succeed, "[pwd]/.xdb/compile-commands.json" file will be generated(some inter
 You can run post process only after build capture completed, It only required when debug something. 
 
 The 'captured' command assumes that there exists trace files(full_trace.log) in .xdb directory. 
-and This command run only post process phase, It will generate compile-commands.json file from full_trace.log.
+and This command run only post process phase, It will generate compile_commands.json file from full_trace.log.
 
 ```
 cxbuild captured
@@ -120,29 +120,29 @@ make[1]: Leaving directory '/home/minhyuk/cx/tests/gzip-1.6'
 > Finished(00:00:09)
 ```
 
- Check compile-commands.json:
+Check compile_commands.json:
  ```
- $ cat .xdb/compile-commands.json
+ $ cat .xdb/compile_commands.json
 [
     {
         "directory": "/home/minhyuk/cx/tests/gzip-1.6/lib",
         "command": "gcc -D HAVE_CONFIG_H -I /home/minhyuk/cx/tests/gzip-1.6/lib -g -O2 -MT /home/minhyuk/cx/tests/gzip-1.6/lib/c-strcasecmp.o -MD -MP -MF .deps/c-strcasecmp.Tpo -c -o /home/minhyuk/cx/tests/gzip-1.6/lib/c-strcasecmp.o /home/minhyuk/cx/tests/gzip-1.6/lib/c-strcasecmp.c",
-        "file": "/home/minhyuk/cx/tests/gzip-1.6/lib/c-strcasecmp.c"
+        "file": "c-strcasecmp.c"
     },
     {
         "directory": "/home/minhyuk/cx/tests/gzip-1.6/lib",
         "command": "gcc -D HAVE_CONFIG_H -I /home/minhyuk/cx/tests/gzip-1.6/lib -g -O2 -MT /home/minhyuk/cx/tests/gzip-1.6/lib/c-ctype.o -MD -MP -MF .deps/c-ctype.Tpo -c -o /home/minhyuk/cx/tests/gzip-1.6/lib/c-ctype.o /home/minhyuk/cx/tests/gzip-1.6/lib/c-ctype.c",
-        "file": "/home/minhyuk/cx/tests/gzip-1.6/lib/c-ctype.c"
+        "file": "c-ctype.c"
     },
     {
         "directory": "/home/minhyuk/cx/tests/gzip-1.6/lib",
         "command": "gcc -D HAVE_CONFIG_H -I /home/minhyuk/cx/tests/gzip-1.6/lib -g -O2 -MT /home/minhyuk/cx/tests/gzip-1.6/lib/cloexec.o -MD -MP -MF .deps/cloexec.Tpo -c -o /home/minhyuk/cx/tests/gzip-1.6/lib/cloexec.o /home/minhyuk/cx/tests/gzip-1.6/lib/cloexec.c",
-        "file": "/home/minhyuk/cx/tests/gzip-1.6/lib/cloexec.c"
+        "file": "cloexec.c"
     },
     {
         "directory": "/home/minhyuk/cx/tests/gzip-1.6/lib",
         "command": "gcc -D HAVE_CONFIG_H -I /home/minhyuk/cx/tests/gzip-1.6/lib -g -O2 -MT /home/minhyuk/cx/tests/gzip-1.6/lib/c-strncasecmp.o -MD -MP -MF .deps/c-strncasecmp.Tpo -c -o /home/minhyuk/cx/tests/gzip-1.6/lib/c-strncasecmp.o /home/minhyuk/cx/tests/gzip-1.6/lib/c-strncasecmp.c",
-        "file": "/home/minhyuk/cx/tests/gzip-1.6/lib/c-strncasecmp.c"
+        "file": "c-strncasecmp.c"
     },
     <...skipped...>
 ]

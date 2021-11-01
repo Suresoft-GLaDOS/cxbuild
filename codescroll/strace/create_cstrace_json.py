@@ -147,7 +147,6 @@ def create_cstrace_json(cstrace_json_path, cstrace_log_path):
     working_directory = libcsbuild.get_working_dir()
     # LDH, 컴파일 인자에서 '@' 으로 시작된 인자는 파일 내부 데이터를 인자로 사용하기 위함, 해당 파일은 open 대상에서 제거
     json_data = cslib.filter_cstrace_open_file(working_directory, json_data)
-    print(os.path.abspath(cstrace_json_path))
 
     with open(os.path.abspath(cstrace_json_path), 'w', encoding='utf-8') as init_file:
         json.dump(json_data, init_file, indent=4, ensure_ascii=False)
