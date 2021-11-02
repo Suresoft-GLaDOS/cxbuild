@@ -20,7 +20,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - run: mkdir {{github.workspace}}/bin
+    - run: mkdir ${{github.workspace}}/bin
     #- name: cstrace build prepare
     #  run: cmake -B ${{github.workspace}}/build -DCMAKE_INSTALL_PREFIX=${{github.workspace}}
       
