@@ -33,34 +33,16 @@ jobs:
       with: 
         spec: build.spec
     
-    - run: chmod +x ${{github.workspace}}/dist/linux/cxbuild
-    - run: cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
-    
-    - name: Zip
-      uses: papeloto/action-zip@v1
+    - run: |
+        chmod +x ${{github.workspace}}/dist/linux/cxbuild
+        chmod +x ${{github.workspace}}/bin/cstrace
+        cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
+        tar cvzf Release-cxbuild-${{ runner.os }}-${{ github.ref }}.tar.gz bin/cstrace bin/cxbuild
+        
+    - uses: "marvinpinto/action-automatic-releases@latest"
       with:
-        files: bin/cstrace bin/cxbuild
-        dest: Release-cxbuild-${{ runner.os }}-${{ github.ref }}.zip
-          
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release cxbuild-${{ github.ref }} for ${{ runner.os }} 
-        draft: false
+        title: Release cxbuild-${{ github.ref }} for ${{ runner.os }} 
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
-        
-    - name: Upload Release Asset
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Release-cxbuild-${{ runner.os }}-${{ github.ref }}.zip
-        asset_name: Release-cxbuild-${{ runner.os }}-${{ github.ref }}.zip
-        asset_content_type: application/zip
-        
+        files: Release-cxbuild-${{ runner.os }}-${{ github.ref }}.tar.gz
+          
