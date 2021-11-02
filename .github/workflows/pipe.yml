@@ -21,11 +21,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: cstrace build prepare
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_INSTALL_PREFIX=${{github.workspace}}
+    #- name: cstrace build prepare
+    #  run: cmake -B ${{github.workspace}}/build -DCMAKE_INSTALL_PREFIX=${{github.workspace}}
       
-    - name: cstrace build
-      run: cmake --build ${{github.workspace}}/build
+    #- name: cstrace build
+    #  run: cmake --build ${{github.workspace}}/build
 
     - name: cxbuild build
       # Build your program with the given configuration
