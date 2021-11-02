@@ -9,6 +9,7 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
+  SHA8: ${GITHUB_SHA::8}
 
 jobs:
   build:
@@ -39,15 +40,15 @@ jobs:
       uses: papeloto/action-zip@v1
       with:
         files: bin/cstrace bin/cxbuild
-        dest: release-cxbuild-${{ runner.os }}-${{ github.sha }}.zip
+        dest: Release-cxbuild-${{ runner.os }}-${SHA8}.zip
           
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: Release-cxbuild-${{ runner.os }}-${{ github.sha }}.zip
+        file: Release-cxbuild-${{ runner.os }}-${SHA8}.zip
         tag: ${{ github.ref }}
         overwrite: false
         file_glob: false
-        release_name: Release-cxbuild-${{ runner.os }}-${{ github.sha }}
+        release_name: Release-cxbuild-${{ runner.os }}-${SHA8}
     
