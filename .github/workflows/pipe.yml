@@ -19,9 +19,6 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-    - name: shorten SHA
-      id: vars
-      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       
     - uses: actions/checkout@v2
     - run: mkdir ${{github.workspace}}/bin
@@ -43,7 +40,7 @@ jobs:
       uses: papeloto/action-zip@v1
       with:
         files: bin/cstrace bin/cxbuild
-        dest: Release-cxbuild-${{ runner.os }}-${{ steps.vars.outputs.sha_short }}.zip
+        dest: Release-cxbuild-${{ runner.os }}-${{ github.ref }}.zip
           
     - name: Create Release
       id: create_release
@@ -52,7 +49,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release cxbuild-${{ steps.vars.outputs.sha_short }} for ${{ runner.os }} 
+        release_name: Release cxbuild-${{ github.ref }} for ${{ runner.os }} 
         draft: false
         prerelease: false
         
@@ -63,7 +60,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Release-cxbuild-${{ runner.os }}-${{ steps.vars.outputs.sha_short }}.zip
-        asset_name: Release-cxbuild-${{ runner.os }}-${{ steps.vars.outputs.sha_short }}.zip
+        asset_path: Release-cxbuild-${{ runner.os }}-${{ github.ref }}.zip
+        asset_name: Release-cxbuild-${{ runner.os }}-${{ github.ref }}.zip
         asset_content_type: application/zip
         
