@@ -28,13 +28,12 @@ jobs:
     #  run: cmake --build ${{github.workspace}}/build
 
     - name: cxbuild build
-      # Build your program with the given configuration
       uses: JackMcKew/pyinstaller-action-linux@0.1.4
       with: 
         spec: build.spec
     
     - run: chmod +x ${{github.workspace}}/dist/linux/cxbuild
-    - run: ${{github.workspace}}/dist/linux/cxbuild |> echo
+    #- run: ${{github.workspace}}/dist/linux/cxbuild |> echo
     - run: cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
     
     - name: Upload binaries to release
