@@ -9,7 +9,6 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
-  SHA8: ${GITHUB_SHA::8}
 
 jobs:
   build:
@@ -20,6 +19,9 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
+    - name: shorten SHA
+      id: vars
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
     - uses: actions/checkout@v2
     - run: mkdir ${{github.workspace}}/bin
     - name: cstrace build prepare
@@ -40,15 +42,27 @@ jobs:
       uses: papeloto/action-zip@v1
       with:
         files: bin/cstrace bin/cxbuild
-        dest: Release-cxbuild-${{ runner.os }}-${SHA8}.zip
+        dest: Release-cxbuild-${{ runner.os }}-${{ sha_short }}.zip
           
-    - name: Upload binaries to release
-      uses: svenstaro/upload-release-action@v2
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: Release-cxbuild-${{ runner.os }}-${SHA8}.zip
-        tag: ${{ github.ref }}
-        overwrite: false
-        file_glob: false
-        release_name: Release-cxbuild-${{ runner.os }}-${SHA8}
-    
+        tag_name: ${{ github.ref }}
+        release_name: Release cxbuild-${{ sha_short }} for ${{ runner.os }} 
+        draft: false
+        prerelease: false
+        
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: Release-cxbuild-${{ runner.os }}-${{ sha_short }}.zip
+        asset_name: Release-cxbuild-${{ runner.os }}-${{ sha_short }}.zip
+        asset_content_type: application/zip
+        
