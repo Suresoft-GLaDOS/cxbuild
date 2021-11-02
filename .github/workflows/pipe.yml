@@ -34,14 +34,16 @@ jobs:
         spec: build.spec
     
     - run: chmod +x ${{github.workspace}}/dist/linux/cxbuild
-    - run: ${{github.workspace}}/dist/linux/cxbuild
+    - run: ${{github.workspace}}/dist/linux/cxbuild |> echo
     - run: cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
     
-    
-    - name: packaging
-      uses: actions/upload-artifact@v2
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
       with:
-        name: Release
-        path: ${{github.workspace}}/bin/
-
-      
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ${{github.workspace}}/bin/*
+        tag: ${{ github.ref }}
+        overwrite: true
+        file_glob: true
+        release_name: cxbuild-release-${{ github.ref }}
+    
