@@ -21,11 +21,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: mkdir ${{github.workspace}}/bin
-    #- name: cstrace build prepare
-    #  run: cmake -B ${{github.workspace}}/build -DCMAKE_INSTALL_PREFIX=${{github.workspace}}
+    - name: cstrace build prepare
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_INSTALL_PREFIX=${{github.workspace}}
       
-    #- name: cstrace build
-    #  run: cmake --build ${{github.workspace}}/build
+    - name: cstrace build
+      run: cmake --build ${{github.workspace}}/build
 
     - name: cxbuild build
       uses: JackMcKew/pyinstaller-action-linux@0.1.4
@@ -33,7 +33,6 @@ jobs:
         spec: build.spec
     
     - run: chmod +x ${{github.workspace}}/dist/linux/cxbuild
-    #- run: ${{github.workspace}}/dist/linux/cxbuild |> echo
     - run: cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
     
     - name: Upload binaries to release
@@ -44,5 +43,5 @@ jobs:
         tag: ${{ github.ref }}
         overwrite: true
         file_glob: true
-        release_name: cxbuild-release-${{ github.ref }}
+        release_name: release-cxbuild-${{ runner.os }}-${{ github.sha }}
     
