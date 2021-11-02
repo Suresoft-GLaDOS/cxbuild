@@ -33,11 +33,10 @@ jobs:
       with: 
         spec: build.spec
     
-    - run: |
-        chmod +x ${{github.workspace}}/dist/linux/cxbuild
-        chmod +x ${{github.workspace}}/bin/cstrace
-        cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
-        tar cvzf Release-cxbuild-${{ runner.os }}-${{ github.ref }}.tar.gz bin/cstrace bin/cxbuild
+    - run: chmod +x ${{github.workspace}}/dist/linux/cxbuild
+    - run: chmod +x ${{github.workspace}}/bin/cstrace
+    - run: cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
+    - run: tar cvzf Release-cxbuild-${{ runner.os }}-${{ github.ref }}.tar.gz bin/cstrace bin/cxbuild
         
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
