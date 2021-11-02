@@ -32,8 +32,11 @@ jobs:
       uses: JackMcKew/pyinstaller-action-linux@0.1.4
       with: 
         spec: build.spec
-
+    
+    - run: chmod +x ${{github.workspace}}/dist/linux/cxbuild
+    - run: ${{github.workspace}}/dist/linux/cxbuild
     - run: cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
+    
     
     - name: packaging
       uses: actions/upload-artifact@v2
