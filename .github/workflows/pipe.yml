@@ -36,12 +36,12 @@ jobs:
     - run: chmod +x ${{github.workspace}}/dist/linux/cxbuild
     - run: chmod +x ${{github.workspace}}/bin/cstrace
     - run: cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
-    - run: tar cvzf Release-cxbuild-${{ runner.os }}-${{ github.ref }}.tar.gz bin/cstrace bin/cxbuild
+    - run: tar cvzf Release-cxbuild-${{ runner.os }}.tar.gz bin/cstrace bin/cxbuild
         
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         title: Release cxbuild-${{ github.ref }} for ${{ runner.os }} 
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
-        files: Release-cxbuild-${{ runner.os }}-${{ github.ref }}.tar.gz
+        files: Release-cxbuild-${{ runner.os }}.tar.gz
           
