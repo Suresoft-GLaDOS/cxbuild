@@ -19,7 +19,8 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-      
+    - uses: kenchan0130/actions-system-info@master
+      id: sys
     - uses: actions/checkout@v2
     - run: mkdir ${{github.workspace}}/bin
     - name: cstrace build prepare
@@ -36,12 +37,13 @@ jobs:
     - run: chmod +x ${{github.workspace}}/dist/linux/cxbuild
     - run: chmod +x ${{github.workspace}}/bin/cstrace
     - run: cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
-    - run: tar cvzf Release-cxbuild-${{ runner.os }}.tar.gz bin/cstrace bin/cxbuild
+    - run: tar cvzf Release-cxbuild-${{ steps.sys.outputs.kernel-release }}-${{ steps.sys.outputs.name }}-${{ steps.sys.outputs.release }}.tar.gz bin/cstrace bin/cxbuild
         
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         title: Release cxbuild-${{ github.ref }} for ${{ runner.os }} 
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
-        files: Release-cxbuild-${{ runner.os }}.tar.gz
+        automatic_release_tag: latest
+        files: Release-cxbuild-${{ steps.sys.outputs.kernel-release }}-${{ steps.sys.outputs.name }}-${{ steps.sys.outputs.release }}.tar.gz
           
