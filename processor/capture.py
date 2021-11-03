@@ -38,4 +38,5 @@ def capture_processing():
 
 
 def capture_post_only_processing():
+    capture_common()
     return codescroll.run_post()
