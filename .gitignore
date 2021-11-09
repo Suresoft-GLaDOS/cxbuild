@@ -1,6 +1,12 @@
 /build
+/dist
+
 /python
+/venv
+
 /share
 /.idea
-**/__pychache__/
 
+/version.py
+__pychache__/
+*.py[cod]
