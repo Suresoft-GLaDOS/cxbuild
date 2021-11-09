@@ -3,6 +3,7 @@ import re
 import cslib
 import subprocess
 import libcsbuild
+
 from .icompiler_tool import *
 
 
@@ -21,28 +22,22 @@ class _GnuCompilerTool(ICompilerTool):
         return options, sources
 
     def get_system_include_list(self):
-        """find system includes from 'gcc -c -v __test_dummy_source__.c'"""
-        dummy_src_path = libcsbuild.get_new_file_path("__test_dummy_source__.c")
-        redirect_path = libcsbuild.get_new_file_path("__redirect__.stdout")
-        with open(dummy_src_path, "w") as f:
-            f.flush()
-            pass
-
-        with open(redirect_path, "w") as f:
-            f.flush()
-            subprocess.call([self.compiler_path, '-v', '-c', dummy_src_path], stdout=f, stderr=f)
-
+        compiler_kind = os.path.basename(self.compiler_path)
+        if compiler_kind == "gcc":
+            command = "gcc -E -Wp,-v -xc /dev/null"
+        elif compiler_kind == "g++" or compiler_kind == "c++":
+            command = "g++ -E -Wp,-v -xc++ /dev/null"
+        else:
+            # TODO: Make no such compiler exception, and Exit gracefully
+            raise Exception("No Such Compiler Exception")
+        output = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True).decode("utf-8")
         collect = False
         collected = []
-        with open(redirect_path, "r") as f:
-
-            for line in f.readlines():
-                if line.strip().startswith("#include <...>"):
-                    collect = True
-                elif line.strip().startswith("End of"):
-                    collect = False
-
-                if collect:
-                    collected.append(line.strip())
-        # remove 0 index cuz, collected[0] == "#include <...>"
+        for line in output.splitlines():
+            if line.strip().startswith("#include <...>"):
+                collect = True
+            elif line.strip().startswith("End of"):
+                collect = False
+            if collect:
+                collected.append(line.strip())
         return collected[1:]
