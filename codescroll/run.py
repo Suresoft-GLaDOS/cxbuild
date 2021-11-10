@@ -5,6 +5,7 @@ import cslib
 from codescroll._capture_common import _LinuxBuild, _LinuxStracePreprocess
 from codescroll._clang_compilation_database import _ClangCompilationDatabaseExport
 from codescroll._project_information_builder import _ProjectInformationBuilder
+from codescroll._artifact_builder import _ArtifactBuilder
 from codescroll.runner import *
 
 
@@ -17,11 +18,20 @@ def run():
         libcsbuild.error_message("%s directory is not right permission to do your request" % working_directory)
         return False, None
 
-    build_with_ctrace = _LinuxBuild() #if not cslib.is_windows() else WindowsBuild()
+    build_with_ctrace = _LinuxBuild()  # if not cslib.is_windows() else WindowsBuild()
     build_trace_processor = _LinuxStracePreprocess()
     project_json_builder = _ProjectInformationBuilder()
     compile_commands_json_export = _ClangCompilationDatabaseExport()
-    build_with_ctrace.next(build_trace_processor).next(project_json_builder).next(compile_commands_json_export)
+    artifact_builder = _ArtifactBuilder()
+
+    # FIXME: Set project_json_builder to points not only compile_commands_json_export, but artifact_builder
+    #        Maybe we should modify runner.py
+    build_with_ctrace.\
+        next(build_trace_processor).\
+        next(project_json_builder).\
+        next(compile_commands_json_export).\
+        next(artifact_builder)
+
     return build_with_ctrace.run(None)
 
 
@@ -34,5 +44,10 @@ def run_post():
     build_trace_processor = _LinuxStracePreprocess()
     project_json_builder = _ProjectInformationBuilder()
     compile_commands_json_export = _ClangCompilationDatabaseExport()
-    build_trace_processor.next(project_json_builder).next(compile_commands_json_export)
+    artifact_builder = _ArtifactBuilder()
+    build_trace_processor.\
+        next(project_json_builder).\
+        next(compile_commands_json_export).\
+        next(artifact_builder)
+
     return build_trace_processor.run(None)
