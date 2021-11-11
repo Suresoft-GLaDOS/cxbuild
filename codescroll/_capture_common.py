@@ -2,14 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import subprocess
-
 import codescroll.strace
 import codescroll.wtrace
 import codescroll
 import cslib
 import json
 from codescroll.runner import *
-
 
 
 # Commercial only

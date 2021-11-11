@@ -5,12 +5,14 @@ import os
 기본적인 Composite Pattern 구현임
 """
 
+
 class RunnerMeta(type):
     pass
 
 
 class Runner(metaclass=RunnerMeta):
     """작업들의 Composite 을 담당하는 Base Class"""
+
     def __init__(self):
         self.next_runner = None
         pass

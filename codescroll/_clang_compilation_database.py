@@ -51,6 +51,3 @@ class _ClangCompilationDatabaseExport(Runner):
 
         libcsbuild.step_message("compile_commands.json written [%s]" % compile_commands_json_path)
         return True, compile_commands_json_path
-
-
-
