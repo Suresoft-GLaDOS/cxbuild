@@ -265,6 +265,7 @@ def is_interest_call(call_command):
         re.compile(r'^([^-]*-)*clang(\+\+)?(-\d+(\.\d+){0,2})?'),
         re.compile(r'^llvm-g(cc|\+\+)'),
         re.compile(r'^([^-]*-)*ar$'),
+        re.compile(r'c\+\+(-\d+(\.\d+){0,2})?'),
     ]
 
     results = any((pattern.match(basename) for pattern in patterns))
