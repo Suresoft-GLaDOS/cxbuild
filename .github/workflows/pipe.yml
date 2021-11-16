@@ -46,4 +46,11 @@ jobs:
         prerelease: false
         automatic_release_tag: latest
         files: Release-cxbuild-${{ steps.sys.outputs.name }}-${{ steps.sys.outputs.release }}.tar.gz
-          
+
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+        architecture: 'x64'
+    - run: |
+        pip install -r requirements.txt
+        pytest tests
