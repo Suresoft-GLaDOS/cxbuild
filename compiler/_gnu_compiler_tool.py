@@ -23,13 +23,15 @@ class _GnuCompilerTool(ICompilerTool):
 
     def get_system_include_list(self):
         compiler_kind = os.path.basename(self.compiler_path)
-        if compiler_kind == "gcc":
+        if compiler_kind == "gcc" or compiler_kind == "cc":
             command = "gcc -E -Wp,-v -xc /dev/null"
         elif compiler_kind == "g++" or compiler_kind == "c++":
             command = "g++ -E -Wp,-v -xc++ /dev/null"
         else:
-            # TODO: Make no such compiler exception, and Exit gracefully
-            raise Exception("No Such Compiler Exception")
+            # TODO:  Make no such compiler exception, and Exit gracefully.
+            # FIXME: There are more compiler names(like gcc-5.3).
+            #        cxbuild should accept such compilers.
+            raise Exception("No Such Compiler Exception.\nCompiler kind is : " + compiler_kind)
         output = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True).decode("utf-8")
         collect = False
         collected = []
