@@ -23,9 +23,9 @@ class _GnuCompilerTool(ICompilerTool):
 
     def get_system_include_list(self):
         compiler_kind = os.path.basename(self.compiler_path)
-        if compiler_kind == "gcc" or compiler_kind == "cc":
+        if compiler_kind in ["gcc", "cc", "cc1"]:
             command = "gcc -E -Wp,-v -xc /dev/null"
-        elif compiler_kind == "g++" or compiler_kind == "c++":
+        elif compiler_kind in ["g++", "c++", "cc1plus"]:
             command = "g++ -E -Wp,-v -xc++ /dev/null"
         else:
             # TODO:  Make no such compiler exception, and Exit gracefully.
