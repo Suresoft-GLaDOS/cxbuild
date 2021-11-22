@@ -27,6 +27,10 @@ class _GnuCompilerTool(ICompilerTool):
             command = "gcc -E -Wp,-v -xc /dev/null"
         elif compiler_kind in ["g++", "c++", "cc1plus"]:
             command = "g++ -E -Wp,-v -xc++ /dev/null"
+        elif compiler_kind in ["clang"]:
+            command = "clang -E -Wp,-v -xc /dev/null"
+        elif compiler_kind in ["clang++"]:
+            command = "clang++ -E -Wp,-v -xc++ /dev/null"
         else:
             # TODO:  Make no such compiler exception, and Exit gracefully.
             # FIXME: There are more compiler names(like gcc-5.3).
