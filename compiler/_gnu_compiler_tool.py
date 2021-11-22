@@ -47,3 +47,17 @@ class _GnuCompilerTool(ICompilerTool):
             if collect:
                 collected.append(line.strip())
         return collected[1:]
+
+    def get_predefined_macro(self):
+        compiler_kind = os.path.basename(self.compiler_path)
+        if compiler_kind in ["gcc", "cc", "cc1"]:
+            command = "gcc -dM -E - < /dev/null"
+        elif compiler_kind in ["g++", "c++", "cc1plus"]:
+            command = "g++ -dM -E -xc++ /dev/null"
+        elif compiler_kind in ["clang"]:
+            command = "clang -dM -E - < /dev/null"
+        elif compiler_kind in ["clang++"]:
+            command = "clang++ -dM -E - -xc++ /dev/null"
+        else:
+            raise Exception("No Such Compiler Exception.\nCompiler kind is : " + compiler_kind)
+        return subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True).decode("utf-8")

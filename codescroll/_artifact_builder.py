@@ -6,7 +6,7 @@ import os
 import stat
 
 from codescroll.runner import *
-
+import compiler.toolsets
 
 class _ArtifactBuilder(Runner):
     """
@@ -31,22 +31,21 @@ class _ArtifactBuilder(Runner):
     def start(self, options, compile_commands_json_path=None):
         if os.name != 'posix':
             raise NotImplementedError('NT system support is not implemented')
-        # FIXME: Want to get project_json, not compile_commands_json.
         if not os.path.exists(compile_commands_json_path):
             return False, None
 
         project_json_path = os.path.join(libcsbuild.get_working_dir(), "project.json")
         all_dependencies = set()
+        all_compiler_paths = set()
         with open(project_json_path, "r") as project_json_file:
             project_json = json.load(project_json_file)
             for module in project_json['modules']:
                 for source in module['sources']:
                     for dependency in source['dependencies']:
                         all_dependencies.add(dependency)
-
+                    all_compiler_paths.add(source['compiler'])
         artifacts_dir_path = libcsbuild.get_working_dir() + os.sep + self._artifacts_dir_name
         if os.name == 'posix':
-            artifacts_dir_path = libcsbuild.get_working_dir() + os.sep + self._artifacts_dir_name
             for dependency in all_dependencies.difference(self.dependency_blacklist):
                 if not dependency.startswith(os.sep):
                     libcsbuild.info_message(
@@ -76,6 +75,15 @@ class _ArtifactBuilder(Runner):
                         shutil.copy(src, dest)
         else:  # not posix (e.g. nt system)
             raise NotImplementedError('NT system support is not implemented')
+
+        macro_dir_path = os.path.join(artifacts_dir_path, '__macro__')
+        os.makedirs(macro_dir_path, exist_ok=True)
+        for compiler_path in all_compiler_paths:
+            # make an empty toolset (do we need command)?
+            toolset = compiler.create(compiler_path, [])
+            predefined_header_name = compiler_path.replace('/', '_') + '_predefined.h'
+            with open(os.path.join(macro_dir_path, predefined_header_name), 'w') as macro_file:
+                macro_file.write(toolset.get_predefined_macro())
 
         # zip artifacts
         artifacts_zip_path = os.path.join(libcsbuild.libcsbuild.get_working_dir(), self._artifacts_zip_name)

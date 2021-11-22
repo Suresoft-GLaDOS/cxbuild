@@ -11,3 +11,6 @@ class ICompilerTool(object):
     def get_include_option_name(self):
         """ return compiler include option name(like -I, --include)"""
         raise NotImplementedError()
+
+    def get_predefined_macro(self):
+        raise NotImplementedError()
