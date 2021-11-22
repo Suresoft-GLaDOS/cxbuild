@@ -81,4 +81,8 @@ class _ArtifactBuilder(Runner):
         artifacts_zip_path = os.path.join(libcsbuild.libcsbuild.get_working_dir(), self._artifacts_zip_name)
         cslib.zip_project(artifacts_dir_path, artifacts_zip_path)
         libcsbuild.step_message("artifacts.zip written [%s]" % artifacts_zip_path)
+
+        # FIXME: This could be dangeraous! Check if 'artifacts' dir place at temp dir is feasible (e.g. /tmp)
+        shutil.rmtree(artifacts_dir_path)
+
         return True, artifacts_zip_path
