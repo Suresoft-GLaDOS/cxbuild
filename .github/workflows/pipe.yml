@@ -2,9 +2,9 @@ name: Pipeline
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches:
+      - main
+      - dpp
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -34,17 +34,27 @@ jobs:
       with: 
         spec: build.spec
     
-    - run: chmod +x ${{github.workspace}}/dist/linux/cxbuild
-    - run: chmod +x ${{github.workspace}}/bin/cstrace
-    - run: cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
-    - run: tar cvzf Release-cxbuild-${{ steps.sys.outputs.name }}-${{ steps.sys.outputs.release }}.tar.gz bin/cstrace bin/cxbuild
-        
+    - run: |
+        chmod +x ${{github.workspace}}/dist/linux/cxbuild
+        chmod +x ${{github.workspace}}/bin/cstrace
+        cp ${{github.workspace}}/dist/linux/cxbuild ${{github.workspace}}/bin/cxbuild
+        tar cvzf Release-cxbuild-${{ steps.sys.outputs.name }}-${{ steps.sys.outputs.release }}.tar.gz bin/cstrace bin/cxbuild
+
+    - name: "set release tag name"
+      run: |
+        export REF_NAME=GITHUB_REF#refs/tags/
+        if [ $REF_NAME=dpp ]; then
+          echo "RELEASE_NAME=dpp" >> $GITHUB_ENV
+        else
+          echo "RELEASE_NAME=$REF_NAME" >> $GITHUB_ENV
+        fi
+
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         title: Release cxbuild-${{ github.ref }} for ${{ runner.os }} 
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
-        automatic_release_tag: latest
+        automatic_release_tag: ${{ env.RELEASE_NAME }}
         files: Release-cxbuild-${{ steps.sys.outputs.name }}-${{ steps.sys.outputs.release }}.tar.gz
 
     - uses: actions/setup-python@v2

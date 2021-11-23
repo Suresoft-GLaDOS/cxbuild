@@ -10,4 +10,3 @@ def create(compiler_path, command) -> ICompilerTool:
 
     # TODO: make as a factory function
     return _GnuCompilerTool(compiler_path, command)
-
