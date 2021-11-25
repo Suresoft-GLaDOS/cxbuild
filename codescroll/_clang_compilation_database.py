@@ -44,6 +44,9 @@ class _ClangCompilationDatabaseExport(Runner):
                             commands.append(toolset.get_include_option_name())
                             commands.append(include)
 
+                        if commands:
+                            commands[0] = compiler_path
+
                         commands.append(file)
                         compile_db.append({"directory": directory, "command": " ".join(commands), "file": file})
 
