@@ -4,7 +4,7 @@ Compilation Database alternative
 # Build
 ## Prerequisite
 the CXBUILD uses linux system call trace utility called strace which was customized.
-So If you want use the cxbuild, you have to build the custom strace(It prints whole path to recognize build commands, https://github.com/damho1104/strace.git)
+So If you want to use the cxbuild, build cstrace (cstrace prints whole path to recognize build commands, https://github.com/damho1104/strace.git).
 ```
 mkdir build
 cd build
