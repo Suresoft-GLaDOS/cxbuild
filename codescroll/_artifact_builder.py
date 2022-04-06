@@ -57,8 +57,7 @@ class _ArtifactBuilder(Runner):
                     src = dependency
                     if not os.path.isfile(src):
                         continue
-                    file_extension_list = [".c", ".cpp", ".h", ".hpp"]
-                    if not any([dependency.endswith(i) for i in file_extension_list]):
+                    if cslib.is_source_or_header_file(src):
                         continue
                     dest = artifacts_dir_path + dependency
                     if os.path.exists(dest):
