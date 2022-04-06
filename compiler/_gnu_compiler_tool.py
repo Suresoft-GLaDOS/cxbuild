@@ -27,7 +27,7 @@ class _GnuCompilerTool(ICompilerTool):
             command = "gcc -E -Wp,-v -xc /dev/null"
         elif compiler_kind in ["g++", "c++", "cc1plus"]:
             command = "g++ -E -Wp,-v -xc++ /dev/null"
-        elif compiler_kind in ["clang"]:
+        elif compiler_kind in ["clang", "clang-11"]:
             command = "clang -E -Wp,-v -xc /dev/null"
         elif compiler_kind in ["clang++"]:
             command = "clang++ -E -Wp,-v -xc++ /dev/null"
@@ -54,7 +54,7 @@ class _GnuCompilerTool(ICompilerTool):
             command = "gcc -dM -E - < /dev/null"
         elif compiler_kind in ["g++", "c++", "cc1plus"]:
             command = "g++ -dM -E -xc++ - < /dev/null"
-        elif compiler_kind in ["clang"]:
+        elif compiler_kind in ["clang", "clang-11"]:
             command = "clang -dM -E - < /dev/null"
         elif compiler_kind in ["clang++"]:
             command = "clang++ -dM -E -xc++ - < /dev/null"
