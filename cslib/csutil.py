@@ -276,9 +276,6 @@ def is_interest_call(call_command):
 
 
 def is_source_or_header_file(file_path, system_include_path_list=None):
-    if cslib.is_debug_mode():
-        import libcsbuild
-        libcsbuild.write_csbuild_log('source and header extension: ' + str(source_and_header_extension))
     if file_path.endswith(source_and_header_extension):
         return True
     # LDH, file_path 가 upper 되어 있어서 확장자 검색하는데 불일치하는 이슈 발생
