@@ -24,9 +24,9 @@ class _GnuCompilerTool(ICompilerTool):
     def get_system_include_list(self):
         compiler = os.path.basename(self.compiler_path)
         if any(compiler.startswith(c) for c in ["g++", "c++", "clang++"]):
-            command = f"{compiler} -E -Wp,-v -xc++ /dev/null"
-        elif any(compiler.startswith(c) for c in ["gcc", "cc", "clang"]):
-            command = f"{compiler} -E -Wp,-v -xc /dev/null"
+            command = f"{self.compiler_path} -E -Wp,-v -xc++ /dev/null"
+        elif any(compiler.startswith(c) for c in ["gcc", "clang"]):
+            command = f"{self.compiler_path} -E -Wp,-v -xc /dev/null"
         else:
             raise Exception(f"No Such Compiler Exception.\nCompiler kind is : {compiler}")
         output = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True).decode("utf-8")
@@ -44,9 +44,9 @@ class _GnuCompilerTool(ICompilerTool):
     def get_predefined_macro(self):
         compiler = os.path.basename(self.compiler_path)
         if any(compiler.startswith(c) for c in ["g++", "c++", "clang++"]):
-            command = f"{compiler} -dM -E -xc++ - < /dev/null"
-        elif any(compiler.startswith(c) for c in ["gcc", "cc", "clang"]):
-            command = f"{compiler} -dM -E - < /dev/null"
+            command = f"{self.compiler_path} -dM -E -xc++ - < /dev/null"
+        elif any(compiler.startswith(c) for c in ["gcc", "clang"]):
+            command = f"{self.compiler_path} -dM -E - < /dev/null"
         else:
             raise Exception(f"No Such Compiler Exception.\nCompiler kind is : {compiler}")
         return subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True).decode("utf-8")
