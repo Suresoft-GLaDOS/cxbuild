@@ -57,7 +57,7 @@ class _ArtifactBuilder(Runner):
                     src = dependency
                     if not os.path.isfile(src):
                         continue
-                    if cslib.is_source_or_header_file(src):
+                    if not cslib.is_source_or_header_file(src):
                         continue
                     dest = artifacts_dir_path + dependency
                     if os.path.exists(dest):
