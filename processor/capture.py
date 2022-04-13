@@ -24,7 +24,10 @@ def capture_common():
         parser.print_help()
         return False
 
-    libcsbuild.set_working_dir(os.path.join(os.path.abspath(os.curdir), '.xdb'))
+    if cxbuild_output_dir := os.getenv("CXBUILD_OUTPUT_DIR", None):
+        libcsbuild.set_working_dir(os.path.join(os.path.abspath(cxbuild_output_dir), '.xdb'))
+    else:
+        libcsbuild.set_working_dir(os.path.join(os.path.abspath(os.curdir), '.xdb'))
     os.environ['STATICFILE_WORKDIR'] = libcsbuild.get_working_dir()
 
     # LDH, 워킹 디렉토리 없으면 생성
