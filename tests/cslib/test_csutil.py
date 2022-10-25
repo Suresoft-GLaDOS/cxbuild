@@ -9,7 +9,7 @@ import cslib
     ("llvm-g++", True),
     ("g++", True),
     ("c++", True),
-    ("cc", False),
+    ("cc", True),
     ("cc1", False)
 ])
 def test_is_interest_call(command, expected):
