@@ -25,7 +25,7 @@ class _GnuCompilerTool(ICompilerTool):
         compiler = os.path.basename(self.compiler_path)
         if any(compiler.startswith(c) for c in ["g++", "c++", "clang++"]):
             command = f"{self.compiler_path} -E -Wp,-v -xc++ /dev/null"
-        elif any(compiler.startswith(c) for c in ["gcc", "clang"]):
+        elif any(compiler.startswith(c) for c in ["gcc", "clang", "cc"]):
             command = f"{self.compiler_path} -E -Wp,-v -xc /dev/null"
         else:
             raise Exception(f"No Such Compiler Exception.\nCompiler kind is : {compiler}")
@@ -45,7 +45,7 @@ class _GnuCompilerTool(ICompilerTool):
         compiler = os.path.basename(self.compiler_path)
         if any(compiler.startswith(c) for c in ["g++", "c++", "clang++"]):
             command = f"{self.compiler_path} -dM -E -xc++ - < /dev/null"
-        elif any(compiler.startswith(c) for c in ["gcc", "clang"]):
+        elif any(compiler.startswith(c) for c in ["gcc", "clang", "cc"]):
             command = f"{self.compiler_path} -dM -E - < /dev/null"
         else:
             raise Exception(f"No Such Compiler Exception.\nCompiler kind is : {compiler}")
